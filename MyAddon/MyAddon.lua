@@ -22,10 +22,6 @@ editBox:SetAutoFocus(false)
 editBox:SetScript("OnEscapePressed", function() editBox:ClearFocus() end)
 scrollFrame:SetScrollChild(editBox)
 
--- Кнопка закрытия окна
-local closeButton = CreateFrame("Button", nil, chatHistoryFrame, "UIPanelCloseButton")
-closeButton:SetPoint("TOPRIGHT", chatHistoryFrame, "TOPRIGHT", -5, -5)
-
 
 -- Событие для записи сообщений в историю
 local chatHistory = {}
@@ -82,19 +78,22 @@ for _, event in ipairs(chatEvents) do
     frame:RegisterEvent(event)
 end
 
--- Обработчик событий
+-- Обработчик событий с форматированием текста
 frame:SetScript("OnEvent", function(self, event, message, sender)
-    table.insert(chatHistory, "[" .. sender .. "]: " .. message)
+    local timeStamp = date("%H:%M:%S") -- Время сообщения
+    local formattedMessage = string.format("|cff00ff00[%s]|r |cffffd700%s|r: %s", timeStamp, sender or "Система", message)
+    table.insert(chatHistory, formattedMessage)
     if #chatHistory > 100 then
         table.remove(chatHistory, 1) -- Ограничиваем историю до 100 сообщений
     end
 end)
 
--- Команда для открытия окна
+-- Команда для открытия окна с отступами
 SLASH_CHATHISTORY1 = "/chathistory"
 SlashCmdList["CHATHISTORY"] = function()
-    local fullText = table.concat(chatHistory, "\n")
+    local fullText = table.concat(chatHistory, "\n\n") -- Разделяем сообщения пустой строкой
     editBox:SetText(fullText)
+    editBox:SetTextInsets(10, 10, 10, 10) -- Отступы: слева, справа, сверху, снизу
     editBox:HighlightText(0, 0) -- Снимаем выделение текста
     chatHistoryFrame:Show()
 end
