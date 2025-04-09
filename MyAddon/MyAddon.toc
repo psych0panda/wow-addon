@@ -1,0 +1,7 @@
+## Interface: 30400
+## Title: MyAddon
+## Notes: Simple copy text from chat to clipboard
+## Author: psychopanda
+## Version: 1.0
+
+MyAddon.lua
